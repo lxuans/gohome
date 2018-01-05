@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .gohome {
+            width: 565px;
+            height: 680px;
+            position: relative;
+            margin: 0 auto;
+        }
+        .route {
+            width: 565px;
+            height: 680px;
+            background: url('./imgs/gohome_p6_02.png') no-repeat;
+            background-size: 100%;
+        }
+        .run {
+            position: absolute;
+            bottom: 8px;
+            left: 35px;
+        }
+        .bus {
+            width: 115px;
+            height: 60px;
+            background: url('./imgs/gohome_spirit_04.png') no-repeat 0 -360px;
+           
+        }
+        .bus1 {
+            width: 60px;
+            height: 110px;
+            background: url('./imgs/gohome_spirit_04.png') no-repeat 0 -524px;
+        }
+        .bus2 {
+            width: 115px;
+            height: 60px;
+            background: url('./imgs/gohome_spirit_04.png') no-repeat 0 -288px;   
+        }
+    </style>
+</head>
+<body>
+    <input type="text" value="">
+    <div class="gohome">
+        <div class="route"></div>
+        <div class="run bus"></div>
+    </div>
+
+    <script src="./js/jquery.js"></script>
+    <script src="./js/velocity.js"></script>
+    <script>
+        $(function(){
+            var busT = $('.run').offset().top - $('.run').height();
+            var busW = $('.run').width();
+
+            function goHome(busT,busW){
+                this.busT = busT;
+                this.busW = busW;
+
+                
+            };
+
+            goHome.prototype = {
+                constructor: goHome,
+
+                step2: function(step){
+                    if(step>0 && step<=2){
+                        busW = step * 230
+                        $('.run').velocity({left: busW},500);
+                        this.busD(step);
+                    };
+                },
+
+                step3: function(step){
+                    if(step==3){
+                        this.step2(2);                        
+                        busT -= (step-2)*305;
+                        $('.run').velocity({bottom: busT},500);
+                        this.busD(step);
+                        $('.run').velocity({left: busW-60},100);                        
+                    }
+                },
+
+                step5: function(step){
+                    if(step>3 && step<=5){
+                        this.step3(3);
+                        busW += -(step-3) * 205;
+                        $('.run').velocity({left: busW},500);
+                        this.busD(step);
+                    };
+                },
+
+                step6: function(step){
+                    if(step==6){
+                        this.step5(5);                      
+                        busT += (step-5)*265;
+                        $('.run').velocity({bottom: busT},500);
+                        this.busD(step);
+                        
+                    }
+                },
+
+                step8: function(step){
+                    if(step>6 && step<=8){
+                        this.step6(6);
+                        busW += (step-6) * 185;
+                        $('.run').velocity({left: busW},500);
+                        this.busD(step);
+                    };
+                },
+                
+                busD: function(step){
+                    if(/[2,5]{1}/.test(step)){
+                        $('.run').velocity({
+                            // duration: 1000,
+                            complete: function() { 
+                                $(".run").addClass('bus1').removeClass('bus bus2');
+                            }
+                        })
+                        
+                    };
+                    if(/[3,4]{1}/.test(step)){
+                        $('.run').velocity({
+                            // duration: 1000,
+                            complete: function() { 
+                                $(".run").addClass('bus2').removeClass('bus1');
+                            }
+                        });
+                        
+                    }
+                    if(/[1,6,7,8]{1}/.test(step)){
+                        $('.run').velocity({
+                            // duration: 1000,
+                            complete: function() { 
+                                $(".run").addClass('bus').removeClass('bus2 bus1');
+                            }
+                        })
+                    }
+                },
+
+                init: function (step){
+                    this.step2(step);
+                    this.step3(step);
+                    this.step5(step);
+                    this.step6(step);
+                    this.step8(step);
+                }    
+            };
+
+            var gohome = new goHome();
+
+            $('input').blur(function(){
+                var step = $('input').val();
+                if(step<=0 || step>10){
+                    alert('1-10')
+                    return false;
+                };
+
+                gohome.init(step);
+            });
+        
+
+        {
+            // $('input').blur(function(){
+            //     var step = $('input').val();
+            //     if(step<=0 || step>10){
+            //         alert('1-10')
+            //         return false;
+            //     };
+
+                // function step2(step){
+                //     if(step>0 && step<=2){
+                //         busW = step * 230
+                //         $('.run').velocity({left: busW},500);
+                //         busD(step);
+                //     };
+                // };
+                
+                // function step3(step){
+                //     if(step==3){
+                //         step2(2);                        
+                //         busT -= (step-2)*305;
+                //         $('.run').velocity({bottom: busT},500);
+                //         busD(step);
+                //         $('.run').velocity({left: busW-60},100);
+                        
+                //     }
+                // };
+
+                // function step5(step){
+                //     if(step>3 && step<=5){
+                //         step3(3);
+                //         busW += -(step-3) * 205;
+                //         $('.run').velocity({left: busW},500);
+                //         busD(step);
+                //     };
+                // };
+
+                // function step6(step){
+                //     if(step==6){
+                //         step5(5);                      
+                //         busT += (step-5)*265;
+                //         $('.run').velocity({bottom: busT},500);
+                //         busD(step);
+                        
+                //     }
+                // };
+
+                // function step8(step){
+                //     if(step>6 && step<=8){
+                //         step6(6);
+                //         busW += (step-6) * 185;
+                //         $('.run').velocity({left: busW},500);
+                //         busD(step);
+                //     };
+                // };
+                
+                // function busD(step){
+                //     if(/[2,5]{1}/.test(step)){
+                //         $('.run').velocity({
+                //             // duration: 1000,
+                //             complete: function() { 
+                //                 $(".run").addClass('bus1').removeClass('bus bus2');
+                //             }
+                //         })
+                        
+                //     };
+                //     if(/[3,4]{1}/.test(step)){
+                //         $('.run').velocity({
+                //             // duration: 1000,
+                //             complete: function() { 
+                //                 $(".run").addClass('bus2').removeClass('bus1');
+                //             }
+                //         });
+                        
+                //     }
+                //     if(/[1,6,7,8]{1}/.test(step)){
+                //         $('.run').velocity({
+                //             // duration: 1000,
+                //             complete: function() { 
+                //                 $(".run").addClass('bus').removeClass('bus2 bus1');
+                //             }
+                //         })
+                //     }
+                // };
+
+                // function init(){
+                //     step2(step);
+                //     step3(step);
+                //     step5(step);
+                //     step6(step);
+                //     step8(step);
+                // }               
+                // init();
+
+            // })
+
+        }
+
+        })
+    </script>
+</body>
+</html>
